@@ -4,21 +4,29 @@ import { UserContext } from "../UserContext";
 
 
 export default function Home() {
+  const { setEmail, setPassword, setRole } = useContext(UserContext);
   const navigate = useNavigate();
-  const { email } = useContext(UserContext);
+  const {email} = useContext(UserContext);
+  
   const [product, setProduct] = useState([]);
-
+// const token = localStorage.getItem("token");
   async function changerole() {
-    const res = await fetch("http://localhost:5000/api/changerole", {
-      method: "GET",
+    const res = await fetch(`http://localhost:5000/api/changerole`, {
+      method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
+         
       },
+      body: JSON.stringify({email}),
+
     });
+   
 
     if (res.ok) {
       navigate("/ProForm");
     } else {
+     
       alert("Some problem occurred");
     }
   }
@@ -48,11 +56,37 @@ export default function Home() {
    navigate("/seller", { state: { email: seller_email } }); // ✅ send data to /seller route
   }
 
+  async function handleLogout() {
+    try {
+      const res = await fetch("http://localhost:5000/api/logout", {
+        method: "POST",
+        credentials: "include" // ✅ must include to clear cookie
+      });
+
+      if (res.ok) {
+        // Clear context values
+        setEmail("");
+        setPassword("");
+        setRole("buyer");
+
+        alert("Logged out successfully");
+        navigate("/");
+      } else {
+        alert("Logout failed");
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+      alert("Something went wrong");
+    }
+  }
   return (
     <div>
-      <button onClick={changerole}>Sell Your Product</button>
-      <button onClick={()=>navigate('/myprofile')}>Profile</button>
-      <button onClick={()=>navigate('/search')}>Search Product</button>
+      <button onClick={changerole}>Sell Your Product</button><br/>
+      <button onClick={()=>navigate('/myprofile')}>Profile</button><br/>
+      <button onClick={()=>navigate('/search')}>Search Product</button><br/>
+      <button onClick={()=>navigate('/chatlist')}>Chats</button><br/>
+      <button onClick={()=>navigate('/chatbot')}>Chatbot</button><br/>
+     <button onClick={handleLogout}>Logout</button><br />
 
       {product.map((prod, idx) => (
         <div key={idx} className="product-card">

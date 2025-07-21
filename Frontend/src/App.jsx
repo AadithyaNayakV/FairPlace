@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import './App.css';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+// App.js
+import React, { useContext } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { UserContext } from './UserContext';
 
-// Components
+// Pages
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Home from './pages/Home';
@@ -12,28 +12,32 @@ import ProForm from './pages/ProForm';
 import Seller from './pages/Seller';
 import Wishlist from './pages/Wishlist';
 import Search from './pages/Search';
+import Review from './pages/Review';
+import Chat from './pages/Chat';
+import ChatList from './pages/ChatList';
+import Chatbot from './pages/Chatbit';
+import "./App.css";
 
-function App() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("buyer");
+export default function App() {
+   // Example usage (optional)
 
   return (
-    <UserContext.Provider value={{ email, setEmail, password, setPassword, role, setRole }}>
-   
-        <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/myprofile" element={<Myprofile />} />
-          <Route path="/proform" element={<ProForm />} />
-          <Route path="/seller" element={<Seller />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/search" element={<Search />} />
-        </Routes>
-     
-    </UserContext.Provider>
+    <>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/myprofile" element={<Myprofile />} />
+        <Route path="/proform" element={<ProForm />} />
+        <Route path="/seller" element={<Seller />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/review" element={<Review />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/chatlist" element={<ChatList/>} />
+        <Route path="/chatbot" element={<Chatbot/>} />
+
+      </Routes>
+    </>
   );
 }
-
-export default App;

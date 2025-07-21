@@ -1,21 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { UserContext } from "../UserContext";
+import { Button } from "@/components/ui/button"
 export default function Seller() {
   const location = useLocation();
   const seller_email = location.state?.email; // 🛑 make sure it's passed correctly
   const [products, setProducts] = useState([]);
-  const nav = useNavigate();
-function contact(){
-  
-}
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (seller_email) {
       getAllProducts();
     }
   }, [seller_email]);
 
+ useEffect(() => {
+    if (!location.state) {
+      navigate("/home"); // redirect to home
+    }
+  }, [location, navigate]);
+
   async function getAllProducts() {
+    
+
+    
     try {
       const res = await fetch("http://localhost:5000/api/getoneproduct", {
         method: "POST",
@@ -33,13 +41,17 @@ function contact(){
       console.error("Error fetching seller's products:", error);
     }
   }
+   const { email } = useContext(UserContext);
 async function addWishlist(id){
+
  const res1 = await fetch('http://localhost:5000/api/addwishlist', {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
+
       },
-      body: JSON.stringify({ id }),
+      body: JSON.stringify({ id,email }),
     });
 
     if (res1.ok) {
@@ -47,9 +59,10 @@ async function addWishlist(id){
       getAllProducts()
       
     } else {
-      alert("Item Not Added");
+    const dataa = await res1.json().catch(() => ({})); // Prevent JSON parse errors
+    alert(dataa.message || "Failed to add item to wishlist");
     }
-  }
+}
 
   return (
     <div>
@@ -75,9 +88,10 @@ async function addWishlist(id){
             </div>
 
             <label>Want to Buy?</label>
-            <a href={`mailto:${seller_email}`}>Contact the Seller</a>
+            <Button varient="ghost" onClick={()=>navigate('/chat',{state:{email:seller_email}})}>Contact the Seller</Button>
 
-            <button onClick={()=>addWishlist(prod.id)}>Add to Cart</button>
+            <button className="flex min-h-svh flex-col items-center justify-center" onClick={()=>addWishlist(prod.id)}>Add to Cart</button>
+            <button onClick={()=>navigate('/review',{ state: { id: prod.id } })}>review</button>
               
            
           </div>

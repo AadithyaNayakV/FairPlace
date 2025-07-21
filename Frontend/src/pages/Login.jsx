@@ -14,6 +14,7 @@ export default function Login() {
     try {
       const res = await fetch("http://localhost:5000/api/login", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },
@@ -30,7 +31,7 @@ export default function Login() {
         setEmail(formEmail);
         setPassword(formPassword);
         setRole(data.role); // e.g., 'buyer' or 'seller'
-
+        //  localStorage.setItem("token", data.token); // ✅ save token
         alert("Login successful as " + data.role);
         navigate('/Home')
         // Redirect or show dashboard if needed

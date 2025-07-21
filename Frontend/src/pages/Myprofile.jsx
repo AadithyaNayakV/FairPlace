@@ -6,12 +6,21 @@ export default function Myprofile() {
   const { email } = useContext(UserContext);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
+  
+ 
+  //  useEffect(() => {
+  //   if (!email ) {
+  //     alert("Please log in first.");
+  //     navigate("/");
+  //   }
+  // }, [email]);
 
   // Fetch user's products
   async function personal() {
     try {
       const res = await fetch('http://localhost:5000/api/personal', {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -31,13 +40,14 @@ export default function Myprofile() {
 
   // Fetch data on load
   useEffect(() => {
-    if (email) personal();
-  }, [email]);
+     personal();
+  }, []);
 
   // Delete product
   async function deletePro(id) {
     const res1 = await fetch('http://localhost:5000/api/deleteProduct', {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -51,9 +61,28 @@ export default function Myprofile() {
       alert("Item Not deleted");
     }
   }
+   const [emaill, setemail] = useState(null);
+  useEffect(() => {
+    async function fetchEmail() {
+      const res = await fetch("http://localhost:5000/api/getemail", {
+        method: "GET",
+        credentials: "include",
+      });
 
+      if (res.ok) {
+        const data = await res.json();
+        setemail(data.email);
+      } else {
+         alert('login is needed')
+        navigate('/')
+        setemail(null);
+      }
+    }
+    fetchEmail();
+  }, []);
   return (
     <div>
+       {emaill ? <div><h4>Logged in as: {emaill}</h4>
       <h1>Your Uploaded Products</h1>
 
       {data.length === 0 ? (
@@ -80,7 +109,7 @@ export default function Myprofile() {
         ))
       )}
       
-      <button onClick={() => navigate('/wishlist')}>Your Cart</button>
+      <button onClick={() => navigate('/wishlist')}>Your Cart</button></div> : <h4>Login is needed</h4>}
     </div>
   );
 }

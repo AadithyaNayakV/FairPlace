@@ -1,81 +1,134 @@
-import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useState,useEffect } from "react";
 import { UserContext } from "../UserContext";
+import { useNavigate } from "react-router-dom";
 
 export default function ProForm() {
-const {email}=useContext(UserContext)
+  const { email } = useContext(UserContext); // only for UI; not sent
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
+
   async function handleUpload(e) {
     e.preventDefault();
+    if (!image) {
+      alert("Select an image!");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("price", price);
     formData.append("description", description);
     formData.append("category", category);
-    formData.append("image", image); // image is a File object
-    formData.append("email", email); 
+    formData.append("image", image); // field name MUST be 'image'
 
     try {
       const res = await fetch("http://localhost:5000/api/upload", {
         method: "POST",
-        body: formData, // Don't set headers manually
+        body: formData,
+        credentials: "include", // send JWT cookie
       });
-
+      const data = await res.json();
       if (res.ok) {
-        alert("Product uploaded successfully!");
-        navigate('/myprofile');
-        
+        alert("Product uploaded!");
+        console.log("Saved product:", data.product);
+        navigate("/myprofile");
       } else {
-        alert("Upload failed");
-        navigate('/home');
+        console.error("Upload failed:", data);
+        alert(data.error || "Upload failed");
       }
     } catch (err) {
-      console.error("Error uploading:", err);
-      alert("Something went wrong");
+      console.error("Upload error:", err);
+      alert("Upload error.");
     }
   }
+  const [emaill, setemail] = useState(null);
+    useEffect(() => {
+      async function fetchEmail() {
+        const res = await fetch("http://localhost:5000/api/getemail", {
+          method: "GET",
+          credentials: "include",
+        });
+  
+        if (res.ok) {
+          const data = await res.json();
+          setemail(data.email);
+        } else {
+           alert('login is needed')
+          navigate('/')
+          setemail(null);
+        }
+      }
+      fetchEmail();
+    }, []);
 
-  return (
-    <div>
-      <form onSubmit={handleUpload}>
-        <label>
-          Title:
-          <input value={title} onChange={(e) => setTitle(e.target.value)} name="title" required />
-        </label>
-        <br />
+   return (
+  <div>
+    {emaill ? (
+      <div>
+        <h4>Logged in as: {emaill}</h4>
 
-        <label>
-          Price:
-          <input value={price} onChange={(e) => setPrice(e.target.value)} name="price" type="number" required />
-        </label>
-        <br />
+        <form onSubmit={handleUpload} encType="multipart/form-data">
+          <h2>Upload Product</h2>
 
-        <label>
-          Description:
-          <input value={description} onChange={(e) => setDescription(e.target.value)} name="description" required />
-        </label>
-        <br />
+          <label>
+            Title:
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </label>
+          <br />
 
-        <label>
-          Category:
-          <input value={category} onChange={(e) => setCategory(e.target.value)} name="category" required />
-        </label>
-        <br />
+          <label>
+            Price:
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required
+            />
+          </label>
+          <br />
 
-        <label>
-          Image:
-          <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} required />
-        </label>
-        <br />
+          <label>
+            Description:
+            <input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </label>
+          <br />
 
-        <button type="submit">Add Product</button>
-      </form>
-    </div>
-  );
-}
+          <label>
+            Category:
+            <input
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            />
+          </label>
+          <br />
+
+          <label>
+            Image:
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files[0])}
+              required
+            />
+          </label>
+          <br />
+
+          <button type="submit">Add Product</button>
+        </form>
+      </div>
+    ) : (
+      <h3>Login required</h3>
+    )}
+  </div>
+);}
