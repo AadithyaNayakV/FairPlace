@@ -9,12 +9,20 @@ const auth= require('./auth'); // ✅ typo fix: `uplaod` → `upload`
 
 require('dotenv').config();
 
+app.get("/", (req, res) => {
+  res.send("Server running...");
+});
 // Middleware
+// app.use(cors({
+//   origin: "http://localhost:5173", // ✅ your frontend origin
+//   credentials: true                // ✅ allow cookies
+// }));
+
 app.use(cors({
-  origin: "http://localhost:5173", // ✅ your frontend origin
-  credentials: true                // ✅ allow cookies
+  origin: "*"
 }));
 
+// Default route
 app.use(express.json()); // ✅ parse JSON bodies
 app.use(cookieParser()); // ✅ parse cookies
 
@@ -23,10 +31,6 @@ app.use('/api', products);
 app.use('/api', upload); 
 app.use('/api',auth)
 
-// Default route
-app.get("/", (req, res) => {
-  res.send("Server running...");
-});
 
 // Start server
 const PORT = process.env.PORT || 5000;
