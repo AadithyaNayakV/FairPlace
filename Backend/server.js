@@ -10,7 +10,7 @@ const auth= require('./auth'); // ✅ typo fix: `uplaod` → `upload`
 require('dotenv').config();
 
 app.get("/", (req, res) => {
-  res.send("Server running...");
+  res.send("Server running aadi...");
 });
 // Middleware
 // app.use(cors({
