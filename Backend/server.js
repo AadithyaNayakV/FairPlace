@@ -9,18 +9,16 @@ const auth= require('./auth'); // ✅ typo fix: `uplaod` → `upload`
 
 require('dotenv').config();
 
-app.get("/", (req, res) => {
-  res.send("Server running adi...");
-});
-// Middleware
-// app.use(cors({
-//   origin: "http://localhost:5173", // ✅ your frontend origin
-//   credentials: true                // ✅ allow cookies
-// }));
 
+// Middleware
 app.use(cors({
-  origin: "*"
+  origin: "http://localhost:5173", // ✅ your frontend origin
+  credentials: true                // ✅ allow cookies
 }));
+
+// app.use(cors({
+//   origin: "*"
+// }));
 
 // Default route
 app.use(express.json()); // ✅ parse JSON bodies
