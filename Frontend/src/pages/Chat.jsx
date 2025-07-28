@@ -269,22 +269,33 @@ const [emaill, setemail] = useState(null);
     }
     fetchEmail();
   }, []);
+const alreadyAlerted = useRef(false); // persists across re-renders
+
+useEffect(() => {
+  if (emaill === receiver && !alreadyAlerted.current) {
+    alreadyAlerted.current = true;
+    alert("This is Your Product");
+    navigate(-1);
+  }
+}, [emaill, receiver]);
   return (
-  <div style={{ padding: 20 }}>
+  <div className=" min-h-screen "style={{ padding: 20 }}>
     {emaill ? (
       <div>
-        <h4>Logged in as: {emaill}</h4>
-        <h2>Chat with {receiver}</h2>
+        
+        <h1 className="text-2xl mb-10">Chat with {receiver}</h1>
 
         <div
           ref={boxRef}
+          // className="border-2"
           style={{
-            border: "1px solid #ccc",
+            border: "2px solid black",
             height: 300,
             overflowY: "auto",
             padding: 8,
             marginBottom: 8,
           }}
+          
         >
           {messages.length === 0 ? (
             <p>No messages yet.</p>
@@ -313,8 +324,8 @@ const [emaill, setemail] = useState(null);
             ))
           )}
         </div>
-
-        <input
+<div className=" bottom-4 m w-full">
+        <input className="  p-2 border-1 border-black rounded-2xl "
           type="text"
           value={text}
           placeholder="message"
@@ -322,14 +333,14 @@ const [emaill, setemail] = useState(null);
           onKeyDown={handleKeyDown}
           style={{ width: "80%", marginRight: 8 }}
         />
-        <button onClick={sendMsg}>Send</button>
+        <button className="border-2 rounded-2xl px-2 p-1 bg-green-400 hover:bg-green-700"onClick={sendMsg}>Send</button>
 
-        <div style={{ marginTop: 12 }}>
-          <button onClick={() => navigate(-1)}>Back</button>
-          <button style={{ marginLeft: 8 }} onClick={getAllMessages}>
+        <div style={{ marginTop: 12,  }}>
+          <button className="border-2 rounded-2xl px-2 p-1 bg-red-500 hover:bg-red-700" onClick={() => navigate(-1)}>Back</button>
+          <button className="border-2 rounded-2xl px-2 p-1 bg-gray-300 hover:bg-gray-500" style={{ marginLeft: 8 }} onClick={getAllMessages}>
             Refresh
           </button>
-        </div>
+        </div></div>
       </div>
     ) : (
       <h4>Login is needed</h4>

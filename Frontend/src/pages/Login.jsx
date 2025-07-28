@@ -1,40 +1,47 @@
 import React, { useContext, useState } from "react";
-import { UserContext } from '../UserContext';
+import { UserContext } from "../UserContext";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function Login() {
   const { setEmail, setPassword, setRole } = useContext(UserContext);
   const [formEmail, setFormEmail] = useState("");
   const [formPassword, setFormPassword] = useState("");
   const [error, setError] = useState("");
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+
   const handleLogin = async (e) => {
-    e.preventDefault(); // prevent form reload
+    e.preventDefault();
 
     try {
       const res = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formEmail,
-          password: formPassword
-        })
+          password: formPassword,
+        }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        // Assume backend sends back role
         setEmail(formEmail);
         setPassword(formPassword);
-        setRole(data.role); // e.g., 'buyer' or 'seller'
-        //  localStorage.setItem("token", data.token); // ✅ save token
-        alert("Login successful as " + data.role);
-        navigate('/Home')
-        // Redirect or show dashboard if needed
+        setRole(data.role);
+        alert("Login successful");
+        navigate("/home");
       } else {
         setError(data.message || "Invalid credentials");
       }
@@ -44,33 +51,48 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleLogin}>
-        <label>
-          Email:
-          <input
-            type="email"
-            value={formEmail}
-            onChange={(e) => setFormEmail(e.target.value)}
-            required
-          />
-        </label>
-        <br />
-
-        <label>
-          Password:
-          <input
-            type="password"
-            value={formPassword}
-            onChange={(e) => setFormPassword(e.target.value)}
-            required
-          />
-        </label>
-        <br />
-
-        <button type="submit">Login</button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-      </form><button onClick={()=>navigate('/signup')}>Signup</button>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle>Login to your account</CardTitle>
+          <CardDescription>
+            Enter your email below to login to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formEmail}
+                onChange={(e) => setFormEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={formPassword}
+                onChange={(e) => setFormPassword(e.target.value)}
+                required
+              />
+            </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-center">
+          <Button variant="outline" onClick={() => navigate("/signup")}>
+            Signup
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

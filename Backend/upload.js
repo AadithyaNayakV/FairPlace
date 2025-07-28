@@ -332,14 +332,14 @@ console.log("passsss")
 
     const imgBuffer = req.file.buffer;
 
-const imgResult = await validateProductImage(req.file.buffer, { strict: true });
-    if (!imgResult.isProduct) {
-      return res.status(400).json({
-        allowed: false,
-        message: imgResult.rejectReason || "Image failed validation.",
-        debug: imgResult.debug?.detRes?.objects?.slice?.(0,5) // optional
-      });
-    }
+// const imgResult = await validateProductImage(req.file.buffer, { strict: true });
+//     if (!imgResult.isProduct) {
+//       return res.status(400).json({
+//         allowed: false,
+//         message: imgResult.rejectReason || "Image failed validation.",
+//         debug: imgResult.debug?.detRes?.objects?.slice?.(0,5) // optional
+//       });
+//     }
 
     // // ✅ Check NSFW content
     // const isNSFW = await hfCheckNSFW(imgBuffer);

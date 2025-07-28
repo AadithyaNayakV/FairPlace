@@ -1,27 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext,useRef, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Wishlist() {
   const { email } = useContext(UserContext);
   const [data, setData] = useState({ items: [] });
-
+  const [emaill, setemail] = useState(null);
   const navigate = useNavigate();
-//  useEffect(() => {
-//     if (!email || !localStorage.getItem("token")) {
-//       alert("Please log in first.");
-//       navigate("/");
-//     }
-//   }, [email]);
+
   // Fetch wishlist items
   async function fetchWishlist() {
     try {
-      const res = await fetch('http://localhost:5000/api/getwishlist', {
+      const res = await fetch("http://localhost:5000/api/getwishlist", {
         method: "POST",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
 
@@ -36,20 +29,16 @@ export default function Wishlist() {
     }
   }
 
-  // Load wishlist on mount
   useEffect(() => {
     fetchWishlist();
-  }, );
+  }, []);
 
   // Delete from wishlist
   async function deleteFromWishlist(id) {
-    const res = await fetch('http://localhost:5000/api/deleteWishlistItem', {
+    const res = await fetch("http://localhost:5000/api/deleteWishlistItem", {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, id }),
     });
 
@@ -60,53 +49,103 @@ export default function Wishlist() {
       alert("Failed to remove item");
     }
   }
- const [emaill, setemail] = useState(null);
-  useEffect(() => {
-    async function fetchEmail() {
-      const res = await fetch("http://localhost:5000/api/getemail", {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setemail(data.email);
-      } else {
-        alert("login is needed")
-        navigate('/')
-        setemail(null);
+  const [previewImg, setPreviewImg] = useState(null); 
+  
+     const hasAlerted = useRef(false);
+    // ✅ Authentication Check
+      useEffect(() => {
+      async function fetchEmail() {
+        try {
+          const res = await fetch("http://localhost:5000/api/getemail", {
+            method: "GET",
+            credentials: "include",
+          });
+  
+          if (res.ok) {
+            const data = await res.json();
+            setemail(data.email);
+          } else {
+            setemail(null);
+            if (!hasAlerted.current) {
+              hasAlerted.current = true;
+              alert("Login is needed");
+              navigate("/");
+            }
+          }
+        } catch (err) {
+          console.error("Error fetching email:", err);
+          setemail(null);
+          if (!hasAlerted.current) {
+            hasAlerted.current = true;
+            alert("Login is needed");
+            navigate("/");
+          }
+        }
       }
-    }
-    fetchEmail();
-  }, []);
+  
+      fetchEmail();
+    }, [navigate]);
+
   return (
-    <div>
-             {emaill ? <h4>Logged in as: {emaill}</h4> : <h4>Login is needed</h4>}
-
-      <h1>Your Wishlist</h1>
-
-      {data.items.length === 0 ? (
-        <p>No items found.</p>
+    <div className="min-h-screen bg-white p-6">
+      {emaill ? (
+        <>
+          <h4 className="mb-4 text-center text-lg font-semibold">
+            
+          </h4>
+        <div className="flex justify-between"> <h1 className="text-2xl font-bold text-center mb-7">
+            Your Wishlist
+          </h1><button className="rounded-lg bg-red-600 hover:bg-red-800 text-white text-sm leading-none h-8 px-4 py-1"
+    onClick={() => navigate(-1)}>Back</button></div>
+        </>
       ) : (
-        data.items.map((prod, idx) => (
-          <div key={idx} className="product-card">
-            <h2>{prod.title}</h2>
-            <p>{prod.description}</p>
-            <p>Category: {prod.category}</p>
-            <p>Price: ₹{prod.price}</p>
+        <h4 className="text-center">Login is needed</h4>
+      )}
 
-            <div className="grid-container">
-              <img
-                src={prod.image_url}
-                alt={prod.title}
-                className="grid-item"
-                style={{ maxWidth: "200px" }}
-              />
+      {/* Wishlist Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {data.items.length === 0 ? (
+          <p className="text-center col-span-full">No items found.</p>
+        ) : (
+          data.items.map((prod, idx) => (
+            <div
+              key={idx}
+              className="border rounded-lg p-4 shadow hover:shadow-lg transition"
+            >
+              <h2 className="text-lg font-semibold">{prod.title}</h2>
+              <p className="text-gray-600 text-sm">{prod.description}</p>
+              <p className="text-sm">Category: {prod.category}</p>
+              <p className="text-sm font-bold">Price: ₹{prod.price}</p>
+
+              <div className="flex justify-center my-2">
+                <img
+                  src={prod.image_url}
+                  alt={prod.title}
+                  className="max-w-full max-h-40 object-cover rounded"
+                 onClick={() => setPreviewImg(prod.image_url)}
+                />
+              </div>
+
+              <button
+                className="bg-red-600 text-white w-full py-2 rounded hover:bg-red-700"
+                onClick={() => deleteFromWishlist(prod.id)}
+              >
+                Remove
+              </button>
             </div>
-
-            <button onClick={() => deleteFromWishlist(prod.id)}>Remove</button>
-          </div>
-        ))
+          ))
+        )}
+      </div>  {previewImg && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50"
+          onClick={() => setPreviewImg(null)}
+        >
+          <img
+            src={previewImg}
+            className="max-h-[90%] max-w-[90%] rounded-lg shadow-xl transition-transform transform scale-100 hover:scale-105"
+            alt="Preview"
+          />
+        </div>
       )}
     </div>
   );

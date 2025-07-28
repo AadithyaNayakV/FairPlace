@@ -1,6 +1,8 @@
-import React, { useContext, useState,useEffect } from "react";
+import React, { useContext, useState,useEffect,useRef } from "react";
 import { UserContext } from "../UserContext";
 import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 export default function ProForm() {
   const { email } = useContext(UserContext); // only for UI; not sent
@@ -46,89 +48,121 @@ export default function ProForm() {
     }
   }
   const [emaill, setemail] = useState(null);
-    useEffect(() => {
-      async function fetchEmail() {
-        const res = await fetch("http://localhost:5000/api/getemail", {
-          method: "GET",
-          credentials: "include",
-        });
-  
-        if (res.ok) {
-          const data = await res.json();
-          setemail(data.email);
-        } else {
-           alert('login is needed')
-          navigate('/')
-          setemail(null);
-        }
-      }
-      fetchEmail();
-    }, []);
+ 
+    const hasAlerted = useRef(false);
+   // ✅ Authentication Check
+     useEffect(() => {
+     async function fetchEmail() {
+       try {
+         const res = await fetch("http://localhost:5000/api/getemail", {
+           method: "GET",
+           credentials: "include",
+         });
+ 
+         if (res.ok) {
+           const data = await res.json();
+           setemail(data.email);
+         } else {
+           setemail(null);
+           if (!hasAlerted.current) {
+             hasAlerted.current = true;
+             alert("Login is needed");
+             navigate("/");
+           }
+         }
+       } catch (err) {
+         console.error("Error fetching email:", err);
+         setemail(null);
+         if (!hasAlerted.current) {
+           hasAlerted.current = true;
+           alert("Login is needed");
+           navigate("/");
+         }
+       }
+     }
+ 
+     fetchEmail();
+   }, [navigate]);
 
    return (
-  <div>
+  <div className="bg-white min-h-screen flex justify-center items-center">
     {emaill ? (
-      <div>
-        <h4>Logged in as: {emaill}</h4>
+      <div className="w-full max-w-lg bg-gray-100 shadow-2xl p-6 border rounded-2xl m-10">
+        <h4 className="mb-4 text-center text-lg font-semibold">
+          Logged in as: {emaill}
+        </h4>
 
-        <form onSubmit={handleUpload} encType="multipart/form-data">
-          <h2>Upload Product</h2>
+        <form
+          onSubmit={handleUpload}
+          className="flex flex-col gap-4 w-full"
+          encType="multipart/form-data"
+        >
+          <h2 className="text-xl font-bold text-center mb-4">
+            Upload Product
+          </h2>
 
-          <label>
-            Title:
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </label>
-          <br />
+          <Label className="font-semibold">Title:</Label>
+          <Input
+            className="w-full border p-2 rounded"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
 
-          <label>
-            Price:
-            <input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              required
-            />
-          </label>
-          <br />
+          <Label className="font-semibold">Price:</Label>
+          <Input
+            className="w-full border p-2 rounded"
+            type="number"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            required
+          />
 
-          <label>
-            Description:
-            <input
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </label>
-          <br />
+          <Label className="font-semibold">Description:</Label>
+          <Input
+            className="w-full border p-2 rounded"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+         <Label className="font-semibold">Category:</Label>
+<select
+  name="category"
+  id="category"
+  className="w-full border p-2 rounded"
+  value={category}
+  onChange={(e) => setCategory(e.target.value)}
+>
+  <option value="">Select a category</option>
+  <option value="Electronics">Electronics</option>
+  <option value="Clothing">Clothing</option>
+  <option value="Furniture">Furniture</option>
+  <option value="Books">Books</option>
+  <option value="Toys">Toys</option>
+  <option value="Sports">Sports</option>
+  
+</select>
 
-          <label>
-            Category:
-            <input
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            />
-          </label>
-          <br />
 
-          <label>
-            Image:
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files[0])}
-              required
-            />
-          </label>
-          <br />
+          <Label className="font-semibold">Image:</Label>
+          <Input
+            className="w-full border p-2 rounded  text-red-600"
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+            required
+          />
 
-          <button type="submit">Add Product</button>
+          <button
+            type="submit"
+            className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 mt-4"
+          >
+            Add Product
+          </button>
         </form>
       </div>
     ) : (
       <h3>Login required</h3>
     )}
   </div>
-);}
+);
+}

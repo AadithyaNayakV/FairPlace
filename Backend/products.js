@@ -264,7 +264,6 @@ console.log("check passed")
 
 
 
-
 // // ✅ Send a message
 // router.post("/sendMessage", authMiddleware, async (req, res) => {
 //   try {

@@ -10,6 +10,9 @@ const router = express.Router();
 // Signup route
 router.post("/signup", async (req, res) => {
   const { email, password,role } = req.body;
+  if(password.length<6){
+    return res.status(400).json({ error: "Password must be atleast 6 character" })
+  }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);

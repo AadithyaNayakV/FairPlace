@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { UserContext } from "@/UserContext";
+import React, { useState, useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { Button } from "@/components/ui/button"
+import { Loader2Icon } from "lucide-react"
 function Review() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Grab whatever you stored in navigation state (e.g., email)
   const id = location.state?.id ?? "";
-
-  const [text, setText] = useState("");
+  const seller_email= location.state?.seller_email ?? "";
+ const { email } = useContext(UserContext);  
+ const [text, setText] = useState("");
   const [reviews, setReviews] = useState([]);   // expecting an array
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(null);
+  const [emaill, setemail] = useState(null);
 
   async function getReview() {
     try {
@@ -43,7 +46,18 @@ function Review() {
   }
 
   async function sendReview() {
-    if (!text.trim()) return;
+    if (!text.trim()){ 
+      
+      alert(
+"Add Review "
+      )
+    
+      return;}
+      if(emaill===seller_email){
+        alert("You Cannot Review to Your Product")
+        return
+      }
+ 
 
     try {
       setErr(null);
@@ -69,7 +83,7 @@ function Review() {
     } catch (e) {
       console.error(e);
       setErr(e.message);
-      alert(e.message);
+      
     }
   }
 
@@ -77,7 +91,6 @@ function Review() {
     getReview();
     // Optionally include id so it refetches if user changes
   }, [id]);
-const [emaill, setemail] = useState(null);
   useEffect(() => {
     async function fetchEmail() {
       const res = await fetch("http://localhost:5000/api/getemail", {
@@ -96,37 +109,60 @@ const [emaill, setemail] = useState(null);
     }
     fetchEmail();
   }, []);
+ 
   return (
-    <div>  {emaill ? <h4>Logged in as: {emaill}</h4> : <h4>Login is needed</h4>}
-      <h2>Reviews for: {id || "Unknown user"}</h2>
+    <div className="flex flex-col gap-6 p-6">
+  {emaill ? <h4></h4> : <h4>Login is needed</h4>}
+  <h2 className="text-black-800 font-bold">Reviews for: {seller_email || "Unknown user"} 's product</h2>
 
-      {loading && <p>Loading...</p>}
-      {err && <p style={{ color: "red" }}></p>}
+  {loading && (
+    <Button size="sm" disabled>
+      <Loader2Icon className="animate-spin" />
+      Please wait
+    </Button>
+  )}
+  {/* {err && <p style={{ color: "red" }}>{err}</p>} */}
 
-      <div>
-        {reviews.length === 0 && !loading ? (
-          <p>No messages yet.</p>
-        ) : (
-          reviews.map((r, i) => (
-            <div key={r._id ?? i} style={{ marginBottom: "8px" }}>
-              {/* Adjust field names to match your API response */}
-              <strong>{r.reviewer_email  || "Anonymous"}:</strong> {r.comment || r.text || ""}
-            </div>
-          ))
-        )}
-      </div>
+  {/* Review List */}
+  <div className="border-1 rounded-2xl p-6 flex flex-col">
+    {reviews.length === 0 && !loading ? (
+      <p>No messages yet.</p>
+    ) : (
+      reviews.map((r, i) => (
+        <div
+          className="p-2 border-1 shadow-2xl hover:scale-102  border-gray-100 rounded-md bg-blue-500 mb-2"
+          key={r._id ?? i}
+        >
+          <strong className="text-blue-900">{r.reviewer_email || "Anonymous"}:</strong> {r.comment || r.text || ""}
+        </div>
+      ))
+    )}
+  </div>
 
-      <input
-        placeholder="message here"
-        type="text"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
-      <button onClick={sendReview}>Add</button>
+  {/* Fixed Bottom Input Bar */}
+  <div className="fixed bottom-0 left-0 w-full bg-white p-3 border-t flex flex-col sm:flex-row gap-3 items-center">
+    <input
+      className="border shadow rounded-2xl px-4 py-2 flex-1"
+      placeholder="message here"
+      type="text"
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+    />
+    <button
+      className="bg-green-500 hover:bg-green-700 text-white rounded-2xl px-3 py-2"
+      onClick={sendReview}
+    >
+      Add
+    </button>
+    <button
+      className="bg-red-500 hover:bg-red-700 text-white rounded-2xl px-3 py-2"
+      onClick={() => navigate(-1)}
+    >
+      Back
+    </button>
+  </div>
+</div>
 
-      <br />
-      <button onClick={() => navigate(-1)}>Back</button>
-    </div>
   );
 }
 

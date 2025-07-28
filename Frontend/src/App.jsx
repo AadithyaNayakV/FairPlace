@@ -16,7 +16,9 @@ import Review from './pages/Review';
 import Chat from './pages/Chat';
 import ChatList from './pages/ChatList';
 import Chatbot from './pages/Chatbit';
+import Robot from './pages/Robot';
 import "./App.css";
+
 
 export default function App() {
    // Example usage (optional)
@@ -36,6 +38,7 @@ export default function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/chatlist" element={<ChatList/>} />
         <Route path="/chatbot" element={<Chatbot/>} />
+        <Route path="/robot" element={<Robot/>} />
 
       </Routes>
     </>
