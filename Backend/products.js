@@ -589,4 +589,24 @@ router.post("/chatbot", chatLimiter,authMiddleware, async (req, res) => {
   }
 });
 
+
+router.get("/testdb", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.send(`✅ DB Connected: ${result.rows[0].now}`);
+  } catch (err) {
+    console.error("❌ DB error:", err.message);
+    res.status(500).send("❌ DB connection failed: " + err.message);
+  }
+});
+
+router.get("/test", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({ time: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database connection failed");
+  }
+});
 module.exports = router;
