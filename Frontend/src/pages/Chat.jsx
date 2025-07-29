@@ -228,7 +228,7 @@ export default function Chat() {
   async function sendMsg() {
     if (!text.trim() || !receiver) return;
     try {
-      await fetch(`${import.meta.env.VITE_BACKEND_URL}//api/sendmsg`, {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/sendmsg`, {
         method: "POST",
         credentials: "include",
         headers: {
