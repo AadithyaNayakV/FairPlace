@@ -12,7 +12,7 @@ export default function Myprofile() {
   // Fetch user's products
   async function personal() {
     try {
-      const res = await fetch("http://localhost:5000/api/personal", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/personal`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -37,7 +37,7 @@ export default function Myprofile() {
   // Fetch user email
   useEffect(() => {
     async function fetchEmail() {
-      const res = await fetch("http://localhost:5000/api/getemail", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getemail`, {
         method: "GET",
         credentials: "include",
       });
@@ -61,7 +61,7 @@ export default function Myprofile() {
 
   // Delete product
   async function deletePro(id) {
-    const res1 = await fetch("http://localhost:5000/api/deleteProduct", {
+    const res1 = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/deleteProduct`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

@@ -23,7 +23,7 @@ export default function Signup() {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/api/signup", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/signup`, {
         method: "POST",
         credentials: "include", // ✅ allows sending/receiving cookies
         headers: {

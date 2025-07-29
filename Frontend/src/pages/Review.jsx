@@ -22,7 +22,7 @@ function Review() {
       setErr(null);
 
       // If your API expects a query param with the id/email:
-      const res = await fetch(`http://localhost:5000/api/getreview`,{
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getreview`,{
         method:'post',
          headers: {
         "Content-Type": "application/json",
@@ -62,7 +62,7 @@ function Review() {
     try {
       setErr(null);
 
-      const res = await fetch("http://localhost:5000/api/sendreview", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/sendreview`, {
         method: "POST",
         credentials:'include',
         headers: {
@@ -93,7 +93,7 @@ function Review() {
   }, [id]);
   useEffect(() => {
     async function fetchEmail() {
-      const res = await fetch("http://localhost:5000/api/getemail", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getemail`, {
         method: "GET",
         credentials: "include",
       });

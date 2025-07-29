@@ -11,7 +11,7 @@ export default function Wishlist() {
   // Fetch wishlist items
   async function fetchWishlist() {
     try {
-      const res = await fetch("http://localhost:5000/api/getwishlist", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getwishlist`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -35,7 +35,7 @@ export default function Wishlist() {
 
   // Delete from wishlist
   async function deleteFromWishlist(id) {
-    const res = await fetch("http://localhost:5000/api/deleteWishlistItem", {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/deleteWishlistItem`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -56,7 +56,7 @@ export default function Wishlist() {
       useEffect(() => {
       async function fetchEmail() {
         try {
-          const res = await fetch("http://localhost:5000/api/getemail", {
+          const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getemail`, {
             method: "GET",
             credentials: "include",
           });

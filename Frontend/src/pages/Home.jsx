@@ -16,7 +16,7 @@ export default function Home() {
   const [previewImg, setPreviewImg] = useState(null); 
 
   async function changerole() {
-    const res = await fetch(`http://localhost:5000/api/changerole`, {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/changerole`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -27,7 +27,7 @@ export default function Home() {
   }
 
   async function getproduct() {
-    const res1 = await fetch("http://localhost:5000/api/getallproduct", {
+    const res1 = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getallproduct`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -47,7 +47,7 @@ export default function Home() {
 
   async function handleLogout() {
     try {
-      const res = await fetch("http://localhost:5000/api/logout", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logout`, {
         method: "POST",
         credentials: "include",
       });
@@ -70,7 +70,7 @@ export default function Home() {
   const [emaill, setemail] = useState(null);
     useEffect(() => {
       async function fetchEmail() {
-        const res = await fetch("http://localhost:5000/api/getemail", {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getemail`, {
           method: "GET",
           credentials: "include",
         });

@@ -28,7 +28,7 @@ export default function ProForm() {
     formData.append("image", image); // field name MUST be 'image'
 
     try {
-      const res = await fetch("http://localhost:5000/api/upload", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/upload`, {
         method: "POST",
         body: formData,
         credentials: "include", // send JWT cookie
@@ -54,7 +54,7 @@ export default function ProForm() {
      useEffect(() => {
      async function fetchEmail() {
        try {
-         const res = await fetch("http://localhost:5000/api/getemail", {
+         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getemail`, {
            method: "GET",
            credentials: "include",
          });

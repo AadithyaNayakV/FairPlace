@@ -26,7 +26,7 @@ export default function Seller() {
 
   async function getAllProducts() {
     try {
-      const res = await fetch("http://localhost:5000/api/getoneproduct", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getoneproduct`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: seller_email }),
@@ -39,7 +39,7 @@ export default function Seller() {
   }
 
   async function addWishlist(id) {
-    const res1 = await fetch("http://localhost:5000/api/addwishlist", {
+    const res1 = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/addwishlist`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

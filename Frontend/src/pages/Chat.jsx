@@ -187,7 +187,7 @@ export default function Chat() {
   async function getAllMessages() {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/getMessages?chat_with_email=${encodeURIComponent(receiver)}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/getMessages?chat_with_email=${encodeURIComponent(receiver)}`,
         {
           credentials: "include",
           headers: {
@@ -207,7 +207,7 @@ export default function Chat() {
   async function getUnreadMessages() {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/getUnreadMessages?chat_with_email=${encodeURIComponent(receiver)}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/getUnreadMessages?chat_with_email=${encodeURIComponent(receiver)}`,
         {
           credentials: "include",
           headers: {
@@ -228,7 +228,7 @@ export default function Chat() {
   async function sendMsg() {
     if (!text.trim() || !receiver) return;
     try {
-      await fetch("http://localhost:5000/api/sendmsg", {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}//api/sendmsg`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -254,7 +254,7 @@ export default function Chat() {
 const [emaill, setemail] = useState(null);
   useEffect(() => {
     async function fetchEmail() {
-      const res = await fetch("http://localhost:5000/api/getemail", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getemail`, {
         method: "GET",
         credentials: "include",
       });

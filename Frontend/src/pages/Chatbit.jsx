@@ -82,7 +82,7 @@ export default function Chatbot() {
     useEffect(() => {
     async function fetchEmail() {
       try {
-        const res = await fetch("http://localhost:5000/api/getemail", {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getemail`, {
           method: "GET",
           credentials: "include",
         });
@@ -120,7 +120,7 @@ export default function Chatbot() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/chatbot", {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/chatbot`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

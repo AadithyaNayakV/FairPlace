@@ -8,7 +8,7 @@ const hasAlerted = useRef(false);
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const res = await fetch("http://localhost:5000/api/chatlist", {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/chatlist`, {
             credentials:'include',
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
@@ -30,7 +30,7 @@ const [emaill, setemail] = useState(null);
  useEffect(() => {
     async function fetchEmail() {
       try {
-        const res = await fetch("http://localhost:5000/api/getemail", {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getemail`, {
           method: "GET",
           credentials: "include",
         });
