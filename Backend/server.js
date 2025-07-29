@@ -12,7 +12,7 @@ require('dotenv').config();
 
 // Middleware
 app.use(cors({
-  origin: "http://localhost:5173", // ✅ your frontend origin
+  origin: "https://fair-place-git-main-aadithya-nayak-vs-projects.vercel.app/", // ✅ your frontend origin
   credentials: true                // ✅ allow cookies
 }));
 

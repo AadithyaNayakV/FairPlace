@@ -27,7 +27,7 @@ router.post("/signup", async (req, res) => {
     });
  res.cookie("token", token, {
     httpOnly: true, // ✅ secure from JS access
-    sameSite: "Lax", // or "None" if cross-site
+    sameSite: "None", // or "None" if cross-site
      secure: true  // true if using HTTPS
    
   });
@@ -59,7 +59,7 @@ router.post("/login", async (req, res) => {
     });
      res.cookie("token", token, {
     httpOnly: true, // ✅ secure from JS access
-    sameSite: "Lax", // or "None" if cross-site
+    sameSite: "None", // or "None" if cross-site
 secure: true // true if using HTTPS
     
   });
@@ -75,7 +75,7 @@ secure: true // true if using HTTPS
 router.post("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "Lax",
+    sameSite: "None",
     secure: true// use true in production with HTTPS
   });
 
