@@ -12,7 +12,7 @@ require('dotenv').config();
 
 // Middleware
 app.use(cors({
-  origin: "https://fair-place.vercel.app/", // ✅ your frontend origin
+  origin: "https://fair-place.vercel.app", // ✅ your frontend origin
   credentials: true                // ✅ allow cookies
 }));
 
