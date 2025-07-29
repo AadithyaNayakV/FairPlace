@@ -31,7 +31,7 @@ export default function Robot() {
 
     // Load GLB model
     const loader = new GLTFLoader();
-    loader.load('chatbot_v011.glb', (gltf) => {
+    loader.load('/chatbot_v011.glb', (gltf) => {
       const model = gltf.scene;
       model.scale.set(10, 10, 10);
       model.position.set(0, -1, 0);
